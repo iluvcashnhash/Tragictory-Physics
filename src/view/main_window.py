@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import (
     QMainWindow, QSplitter, QTreeWidget, QTreeWidgetItem, 
     QStackedWidget, QWidget, QVBoxLayout, QLabel
 )
-from .welcome_widget import WelcomeWidget
 from PyQt6.QtCore import Qt
 
 
@@ -79,25 +78,6 @@ class MainWindow(QMainWindow):
         """Setup the right content panel with stacked widget."""
         # Create stacked widget for different content views
         self.content_stack = QStackedWidget()
-        
-        # Add welcome widget (Index 0)
-        self.welcome_widget = WelcomeWidget()
-        self.content_stack.addWidget(self.welcome_widget)
-        
-        # Create placeholder widgets for different views
-        # Theory view placeholder
-        self.theory_widget = QWidget()
-        theory_layout = QVBoxLayout(self.theory_widget)
-        theory_layout.addWidget(QLabel("Theory Placeholder"))
-        
-        # Simulation view placeholder
-        self.simulation_widget = QWidget()
-        simulation_layout = QVBoxLayout(self.simulation_widget)
-        simulation_layout.addWidget(QLabel("Simulation Placeholder"))
-        
-        # Add widgets to stacked widget
-        self.content_stack.addWidget(self.theory_widget)  # Index 1: Theory
-        self.content_stack.addWidget(self.simulation_widget)  # Index 2: Simulation
         
         # Add content stack to splitter (right side)
         self.splitter.addWidget(self.content_stack)

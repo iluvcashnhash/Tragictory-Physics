@@ -14,6 +14,7 @@ from ..model.kinematics import ProjectileModel
 from ..view.main_window import MainWindow
 from ..view.theory_widget import TheoryWidget
 from ..view.simulation_widget import SimulationWidget
+from ..view.welcome_widget import WelcomeWidget
 
 
 class MainController:
@@ -29,16 +30,19 @@ class MainController:
         self.db_manager = DatabaseManager()
         self.main_window = MainWindow()
         
-        # Create and setup theory widget
+        # Initialize all content widgets
+        self.welcome_widget = WelcomeWidget()
         self.theory_widget = TheoryWidget()
-        self.main_window.get_content_stack().addWidget(self.theory_widget)
-        
-        # Create and setup simulation widget
         self.simulation_widget = SimulationWidget()
-        self.main_window.get_content_stack().addWidget(self.simulation_widget)
         
-        # Set welcome widget as default (index 0)
-        self.main_window.get_content_stack().setCurrentIndex(0)
+        # Add widgets to content stack in correct order
+        stack = self.main_window.get_content_stack()
+        stack.addWidget(self.welcome_widget)     # Index 0: Welcome
+        stack.addWidget(self.theory_widget)      # Index 1: Theory
+        stack.addWidget(self.simulation_widget)  # Index 2: Simulation
+        
+        # Set welcome widget as default
+        stack.setCurrentIndex(0)
         
         # Setup UI connections
         self._setup_connections()
@@ -133,8 +137,7 @@ class MainController:
         self.theory_widget.set_formulas(formulas_data)
         
         # Switch to theory view (index 1)
-        content_stack = self.main_window.get_content_stack()
-        content_stack.setCurrentIndex(1)
+        self.main_window.get_content_stack().setCurrentIndex(1)
         
         # Show/hide simulation button based on topic data
         if self._topic_has_simulation(topic_id):
@@ -194,8 +197,7 @@ class MainController:
     def _on_simulation_button_clicked(self) -> None:
         """Handle simulation button click event."""
         # Switch to simulation view (index 2)
-        content_stack = self.main_window.get_content_stack()
-        content_stack.setCurrentIndex(2)
+        self.main_window.get_content_stack().setCurrentIndex(2)
         
         # Update simulation with current parameters
         self.update_simulation()
@@ -233,5 +235,4 @@ class MainController:
     
     def _on_back_button_clicked(self) -> None:
         """Handle back button click event to return to theory view."""
-        content_stack = self.main_window.get_content_stack()
-        content_stack.setCurrentIndex(1)
+        self.main_window.get_content_stack().setCurrentIndex(1)
