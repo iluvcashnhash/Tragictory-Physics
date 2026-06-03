@@ -1,4 +1,4 @@
-from .registry import register_content
+from ..registry import register_content
 
 THEORY = """
 <h2>Фотоэффект и корпускулярно-волновой дуализм</h2>
@@ -21,7 +21,17 @@ THEORY = """
 FORMULAS = [
     {"formula_latex": "$$ E = h \\nu $$", "description": "Энергия кванта света (формула Планка), где h — постоянная Планка"},
     {"formula_latex": "$$ h \\nu = A_{out} + \\frac{m v_{max}^2}{2} $$", "description": "Уравнение Эйнштейна для фотоэффекта"},
-    {"formula_latex": "$$ \\nu_{red} = \\frac{A_{out}}{h} $$", "description": "Красная граница фотоэффекта (минимальная частота)"}
+    {"formula_latex": "$$ \\nu_{red} = \\frac{A_{out}}{h} $$", "description": "Красная граница фотоэффекта (минимальная частота)"},
 ]
 
-register_content(11, "Квантовая физика и астрофизика", "Фотоэффект и уравнение Эйнштейна", False, THEORY, FORMULAS)
+QUESTIONS = []
+
+register_content(
+    grade=11,
+    grade_desc="Квантовая физика и астрофизика",
+    title="Фотоэффект и уравнение Эйнштейна",
+    has_simulation=False,
+    theory_html=THEORY,
+    formulas=FORMULAS,
+    questions=QUESTIONS,
+)

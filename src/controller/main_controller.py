@@ -88,6 +88,9 @@ class MainController:
 
         # Connect quiz button in theory widget
         self.theory_widget.get_quiz_button().clicked.connect(self._on_quiz_button_clicked)
+
+        # Connect search input to navigation filter
+        self.main_window.search_input.textChanged.connect(self._filter_navigation_tree)
     
     def load_navigation_tree(self) -> None:
         """Load navigation tree with grades and topics from database."""
@@ -268,6 +271,31 @@ class MainController:
         except Exception as e:
             print(f"Error updating simulation: {e}")
     
+    def _filter_navigation_tree(self, text: str) -> None:
+        """Filter navigation tree items based on search text.
+
+        Shows only topic items whose text contains *text* (case-insensitive).
+        A grade (parent) node is hidden when none of its topics match.
+
+        Args:
+            text: The search string typed by the user.
+        """
+        query = text.strip().lower()
+        tree = self.main_window.get_navigation_tree()
+
+        for grade_idx in range(tree.topLevelItemCount()):
+            grade_item = tree.topLevelItem(grade_idx)
+            any_visible = False
+
+            for topic_idx in range(grade_item.childCount()):
+                topic_item = grade_item.child(topic_idx)
+                match = query == "" or query in topic_item.text(0).lower()
+                topic_item.setHidden(not match)
+                if match:
+                    any_visible = True
+
+            grade_item.setHidden(not any_visible)
+
     def _on_quiz_button_clicked(self) -> None:
         """Handle quiz button click — switch to quiz view (index 3)."""
         self.main_window.get_content_stack().setCurrentIndex(3)

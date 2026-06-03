@@ -1,4 +1,4 @@
-from .registry import register_content
+from ..registry import register_content
 
 THEORY = """
 <h2>Классическая механика и границы ее применимости</h2>
@@ -25,7 +25,17 @@ FORMULAS = [
     {"formula_latex": "$$ \\sum \\vec{F} = 0 \\implies \\vec{v} = const $$", "description": "Первый закон Ньютона (Закон инерции)"},
     {"formula_latex": "$$ \\vec{F} = m \\cdot \\vec{a} $$", "description": "Второй закон Ньютона (Основной закон динамики)"},
     {"formula_latex": "$$ \\vec{F}_{12} = -\\vec{F}_{21} $$", "description": "Третий закон Ньютона (Действие равно противодействию)"},
-    {"formula_latex": "$$ \\vec{p} = m \\cdot \\vec{v} $$", "description": "Импульс тела"}
+    {"formula_latex": "$$ \\vec{p} = m \\cdot \\vec{v} $$", "description": "Импульс тела"},
 ]
 
-register_content(9, "Динамика и законы сохранения", "Законы Ньютона", True, THEORY, FORMULAS)
+QUESTIONS = []
+
+register_content(
+    grade=9,
+    grade_desc="Динамика и законы сохранения",
+    title="Законы Ньютона",
+    has_simulation=True,
+    theory_html=THEORY,
+    formulas=FORMULAS,
+    questions=QUESTIONS,
+)

@@ -7,7 +7,7 @@ with navigation tree and content area using PyQt6.
 
 from PyQt6.QtWidgets import (
     QMainWindow, QSplitter, QTreeWidget, QTreeWidgetItem,
-    QStackedWidget, QWidget, QVBoxLayout, QLabel
+    QStackedWidget, QWidget, QVBoxLayout, QLabel, QLineEdit
 )
 from PyQt6.QtCore import Qt
 
@@ -47,32 +47,44 @@ class MainWindow(QMainWindow):
         self.splitter.setSizes([300, 700])
     
     def _setup_navigation_panel(self) -> None:
-        """Setup the left navigation panel with tree widget."""
-        # Create tree widget for navigation
+        """Setup the left navigation panel with search input and tree widget."""
+        # Container widget so search + tree share one splitter slot
+        nav_container = QWidget()
+        nav_container.setMaximumWidth(400)
+        nav_layout = QVBoxLayout(nav_container)
+        nav_layout.setContentsMargins(0, 0, 0, 0)
+        nav_layout.setSpacing(4)
+
+        # Search input
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Поиск по темам...")
+        self.search_input.setClearButtonEnabled(True)
+        nav_layout.addWidget(self.search_input)
+
+        # Navigation tree
         self.navigation_tree = QTreeWidget()
         self.navigation_tree.setHeaderLabel("Навигация")
-        self.navigation_tree.setMaximumWidth(400)
-        
+        nav_layout.addWidget(self.navigation_tree)
+
         # Add sample grade items (will be populated from database later)
         grades = ["7 класс", "8 класс", "9 класс", "10 класс", "11 класс"]
-        
+
         for grade_text in grades:
             grade_item = QTreeWidgetItem(self.navigation_tree)
             grade_item.setText(0, grade_text)
-            grade_item.setData(0, Qt.ItemDataRole.UserRole, None)  # Store grade ID later
-            
-            # Add sample topic items (will be populated from database later)
+            grade_item.setData(0, Qt.ItemDataRole.UserRole, None)
+
             sample_topics = ["Тема 1", "Тема 2", "Тема 3"]
             for topic_text in sample_topics:
                 topic_item = QTreeWidgetItem(grade_item)
                 topic_item.setText(0, topic_text)
-                topic_item.setData(0, Qt.ItemDataRole.UserRole, None)  # Store topic ID later
-        
+                topic_item.setData(0, Qt.ItemDataRole.UserRole, None)
+
         # Expand all grade items by default
         self.navigation_tree.expandAll()
-        
-        # Add navigation tree to splitter (left side)
-        self.splitter.addWidget(self.navigation_tree)
+
+        # Add container to splitter (left side)
+        self.splitter.addWidget(nav_container)
     
     def _setup_content_panel(self) -> None:
         """Setup the right content panel with stacked widget."""

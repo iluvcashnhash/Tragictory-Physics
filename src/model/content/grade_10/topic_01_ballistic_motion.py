@@ -1,4 +1,4 @@
-from .registry import register_content
+from ..registry import register_content
 
 THEORY = """
 <h2>Баллистическое движение</h2>
@@ -37,15 +37,23 @@ THEORY = """
 FORMULAS = [
     {"formula_latex": "$$ y(x) = x \\cdot \\tan(\\alpha) - \\frac{g x^2}{2 v_0^2 \\cos^2(\\alpha)} $$", "description": "Уравнение траектории движения тела"},
     {"formula_latex": "$$ h_{max} = \\frac{v_0^2 \\sin^2(\\alpha)}{2g} $$", "description": "Максимальная высота подъема"},
-    {"formula_latex": "$$ L = \\frac{v_0^2 \\sin(2\\alpha)}{g} $$", "description": "Дальность полета"}
+    {"formula_latex": "$$ L = \\frac{v_0^2 \\sin(2\\alpha)}{g} $$", "description": "Дальность полета"},
 ]
 
 QUESTIONS = [
     {
         "text": "Как изменится дальность полета тела, брошенного под углом 45 градусов, если начальную скорость увеличить в 2 раза?",
         "options": ["Увеличится в 2 раза", "Увеличится в 4 раза", "Не изменится", "Уменьшится в 2 раза"],
-        "correct_index": 1
+        "correct_index": 1,
     }
 ]
 
-register_content(10, "Кинематика", "Баллистическое движение", True, THEORY, FORMULAS, questions=QUESTIONS)
+register_content(
+    grade=10,
+    grade_desc="Кинематика",
+    title="Баллистическое движение",
+    has_simulation=True,
+    theory_html=THEORY,
+    formulas=FORMULAS,
+    questions=QUESTIONS,
+)
