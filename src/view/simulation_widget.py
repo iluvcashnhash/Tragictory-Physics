@@ -52,14 +52,20 @@ class SimulationWidget(QWidget):
         self.plot_widget = pg.PlotWidget(title="Траектория движения тела")
         
         # Configure plot appearance
-        self.plot_widget.setLabel('left', 'Высота', units='м')
-        self.plot_widget.setLabel('bottom', 'Дальность', units='м')
-        self.plot_widget.showGrid(x=True, y=True, alpha=0.3)
-        self.plot_widget.setBackground('w')
+        self.plot_widget.setLabel('left', 'Высота', units='м', color='#d4d4d4')
+        self.plot_widget.setLabel('bottom', 'Дальность', units='м', color='#d4d4d4')
+        self.plot_widget.showGrid(x=True, y=True, alpha=0.2)
+        self.plot_widget.setBackground('#1e1e1e')
+        
+        # Set axis text color
+        self.plot_widget.getAxis('left').setPen('#d4d4d4')
+        self.plot_widget.getAxis('bottom').setPen('#d4d4d4')
+        self.plot_widget.getAxis('left').setTextPen('#d4d4d4')
+        self.plot_widget.getAxis('bottom').setTextPen('#d4d4d4')
         
         # Create plot item for trajectory
         self.trajectory_plot = self.plot_widget.plot(
-            pen=pg.mkPen('b', width=2), 
+            pen=pg.mkPen('#ff9d00', width=3), 
             name='Траектория'
         )
         
@@ -144,8 +150,8 @@ class SimulationWidget(QWidget):
         self.plot_widget.setXRange(0, 100)
         self.plot_widget.setYRange(0, 50)
         
-        # Add ground line
-        ground_line = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('k', width=1, style=Qt.PenStyle.DashLine))
+        # Add ground line with dark theme color
+        ground_line = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen('#d4d4d4', width=1, style=Qt.PenStyle.DashLine, alpha=0.5))
         self.plot_widget.addItem(ground_line)
     
     def get_velocity(self) -> int:

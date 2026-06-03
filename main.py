@@ -18,6 +18,15 @@ def main() -> None:
     app = QApplication(sys.argv)
     app.setApplicationName("Tragictory Physics")
     
+    # Apply dark theme style sheet
+    try:
+        with open("assets/style.qss", "r", encoding="utf-8") as style_file:
+            app.setStyleSheet(style_file.read())
+    except FileNotFoundError:
+        print("Style file not found, using default theme")
+    except Exception as e:
+        print(f"Error loading style sheet: {e}")
+    
     # Initialize database
     db_setup.initialize_db()
     
