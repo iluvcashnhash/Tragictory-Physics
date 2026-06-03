@@ -6,7 +6,7 @@ with navigation tree and content area using PyQt6.
 """
 
 from PyQt6.QtWidgets import (
-    QMainWindow, QSplitter, QTreeWidget, QTreeWidgetItem, 
+    QMainWindow, QSplitter, QTreeWidget, QTreeWidgetItem,
     QStackedWidget, QWidget, QVBoxLayout, QLabel
 )
 from PyQt6.QtCore import Qt
@@ -76,8 +76,11 @@ class MainWindow(QMainWindow):
     
     def _setup_content_panel(self) -> None:
         """Setup the right content panel with stacked widget."""
-        # Create stacked widget for different content views
+        # Outer stack: welcome (0), theory (1), simulation (2)
         self.content_stack = QStackedWidget()
+        
+        # Inner stack for simulations (index 2 of content_stack)
+        self.simulation_stack = QStackedWidget()
         
         # Add content stack to splitter (right side)
         self.splitter.addWidget(self.content_stack)
@@ -97,3 +100,11 @@ class MainWindow(QMainWindow):
             QStackedWidget: The content stacked widget.
         """
         return self.content_stack
+
+    def get_simulation_stack(self) -> QStackedWidget:
+        """Get the simulation stacked widget.
+
+        Returns:
+            QStackedWidget: The inner stack that holds all simulation widgets.
+        """
+        return self.simulation_stack

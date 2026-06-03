@@ -14,6 +14,7 @@ from ..model.kinematics import ProjectileModel
 from ..view.main_window import MainWindow
 from ..view.theory_widget import TheoryWidget
 from ..view.simulation_widget import SimulationWidget
+from ..view.dynamics_widget import DynamicsWidget
 from ..view.welcome_widget import WelcomeWidget
 
 
@@ -30,17 +31,26 @@ class MainController:
         self.db_manager = DatabaseManager()
         self.main_window = MainWindow()
         
+        # Track currently selected topic title for simulation routing
+        self._current_topic_title: str = ""
+
         # Initialize all content widgets
         self.welcome_widget = WelcomeWidget()
         self.theory_widget = TheoryWidget()
-        self.simulation_widget = SimulationWidget()
-        
-        # Add widgets to content stack in correct order
+        self.simulation_widget = SimulationWidget()   # kinematics
+        self.dynamics_widget = DynamicsWidget()       # inclined plane
+
+        # Build simulation_stack (inner stack at index 2 of content_stack)
+        sim_stack = self.main_window.get_simulation_stack()
+        sim_stack.addWidget(self.simulation_widget)   # sim index 0: kinematics
+        sim_stack.addWidget(self.dynamics_widget)     # sim index 1: dynamics
+
+        # Add widgets to outer content_stack in correct order
         stack = self.main_window.get_content_stack()
-        stack.addWidget(self.welcome_widget)     # Index 0: Welcome
-        stack.addWidget(self.theory_widget)      # Index 1: Theory
-        stack.addWidget(self.simulation_widget)  # Index 2: Simulation
-        
+        stack.addWidget(self.welcome_widget)               # Index 0: Welcome
+        stack.addWidget(self.theory_widget)                # Index 1: Theory
+        stack.addWidget(self.main_window.get_simulation_stack())  # Index 2: Simulations
+
         # Set welcome widget as default
         stack.setCurrentIndex(0)
         
@@ -66,8 +76,9 @@ class MainController:
         self.simulation_widget.angle_slider.valueChanged.connect(self.update_simulation)
         self.simulation_widget.planet_combo.currentTextChanged.connect(self.update_simulation)
         
-        # Connect back button to return to theory view
+        # Connect back buttons to return to theory view
         self.simulation_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
+        self.dynamics_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
     
     def load_navigation_tree(self) -> None:
         """Load navigation tree with grades and topics from database."""
@@ -125,7 +136,8 @@ class MainController:
         
         # Get topic title from tree (or could fetch from database)
         topic_title = self._get_topic_title_by_id(topic_id)
-        
+        self._current_topic_title = topic_title
+
         # Update theory widget with data
         self.theory_widget.set_title(topic_title)
         
@@ -196,11 +208,16 @@ class MainController:
     
     def _on_simulation_button_clicked(self) -> None:
         """Handle simulation button click event."""
-        # Switch to simulation view (index 2)
+        # Route to the correct simulation widget based on current topic
+        sim_stack = self.main_window.get_simulation_stack()
+        if self._current_topic_title == "Баллистическое движение":
+            sim_stack.setCurrentIndex(0)   # kinematics
+            self.update_simulation()
+        else:
+            sim_stack.setCurrentIndex(1)   # inclined plane / dynamics
+
+        # Show the simulation container (index 2 of outer stack)
         self.main_window.get_content_stack().setCurrentIndex(2)
-        
-        # Update simulation with current parameters
-        self.update_simulation()
     
     def show(self) -> None:
         """Show the main window."""

@@ -28,4 +28,4 @@ FORMULAS = [
     {"formula_latex": "$$ \\vec{p} = m \\cdot \\vec{v} $$", "description": "Импульс тела"}
 ]
 
-register_content(9, "Динамика и законы сохранения", "Законы Ньютона", False, THEORY, FORMULAS)
+register_content(9, "Динамика и законы сохранения", "Законы Ньютона", True, THEORY, FORMULAS)
