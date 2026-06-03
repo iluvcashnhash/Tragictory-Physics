@@ -80,9 +80,6 @@ class MainWindow(QMainWindow):
                 topic_item.setText(0, topic_text)
                 topic_item.setData(0, Qt.ItemDataRole.UserRole, None)
 
-        # Expand all grade items by default
-        self.navigation_tree.expandAll()
-
         # Add container to splitter (left side)
         self.splitter.addWidget(nav_container)
     

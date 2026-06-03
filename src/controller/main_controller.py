@@ -120,8 +120,6 @@ class MainController:
                 # Store simulation availability flag
                 topic_item.setData(1, Qt.ItemDataRole.UserRole, topic['is_simulation_available'])
         
-        # Expand all grade items
-        navigation_tree.expandAll()
     
     def _on_tree_item_clicked(self, item: QTreeWidgetItem, column: int) -> None:
         """Handle tree item click events.

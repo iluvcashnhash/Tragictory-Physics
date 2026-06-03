@@ -72,7 +72,7 @@ class DatabaseManager:
         cursor = self._connection.cursor()
         cursor.execute(
             "SELECT id, grade_id, title, is_simulation_available FROM topics "
-            "WHERE grade_id = ? ORDER BY title",
+            "WHERE grade_id = ? ORDER BY id",
             (grade_id,)
         )
         rows = cursor.fetchall()
