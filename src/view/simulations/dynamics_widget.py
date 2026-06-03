@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
-from ..model.dynamics import InclinedPlaneModel
+from ...model.dynamics import InclinedPlaneModel
 
 
 # Scale factor: 1 Newton = this many plot units for arrow length
@@ -359,3 +359,7 @@ class DynamicsWidget(QWidget):
         self._lbl_acc.setText(
             f"a = {forces['acceleration']:.2f} м/с²  ({state})"
         )
+
+
+from .registry import register_simulation
+register_simulation("Законы Ньютона", DynamicsWidget)

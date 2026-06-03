@@ -55,7 +55,7 @@ register_content(
     grade=10,
     grade_desc="Профильная механика",
     title="Идеальный газ и основное уравнение МКТ",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

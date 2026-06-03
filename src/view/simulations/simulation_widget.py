@@ -218,3 +218,7 @@ class SimulationWidget(QWidget):
             QPushButton: The back button for returning to theory view.
         """
         return self.back_button
+
+
+from .registry import register_simulation
+register_simulation("Баллистическое движение", SimulationWidget)

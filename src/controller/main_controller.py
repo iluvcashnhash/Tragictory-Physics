@@ -13,10 +13,12 @@ from ..model.db_manager import DatabaseManager
 from ..model.kinematics import ProjectileModel
 from ..view.main_window import MainWindow
 from ..view.theory_widget import TheoryWidget
-from ..view.simulation_widget import SimulationWidget
-from ..view.dynamics_widget import DynamicsWidget
 from ..view.welcome_widget import WelcomeWidget
 from ..view.quiz_widget import QuizWidget
+from ..view.simulations.registry import get_simulation_widget
+from ..view.simulations import simulation_widget as _sim_reg  # noqa: F401 — triggers registration
+from ..view.simulations import dynamics_widget as _dyn_reg    # noqa: F401 — triggers registration
+from ..view.simulations import mkt_widget as _mkt_reg         # noqa: F401 — triggers registration
 
 
 class MainController:
@@ -36,25 +38,20 @@ class MainController:
         self._current_topic_title: str = ""
         self._current_questions: list = []
 
-        # Initialize all content widgets
+        # Initialize persistent widgets
         self.welcome_widget = WelcomeWidget()
         self.theory_widget = TheoryWidget()
-        self.simulation_widget = SimulationWidget()   # kinematics
-        self.dynamics_widget = DynamicsWidget()       # inclined plane
-
-        # Build simulation_stack (inner stack at index 2 of content_stack)
-        sim_stack = self.main_window.get_simulation_stack()
-        sim_stack.addWidget(self.simulation_widget)   # sim index 0: kinematics
-        sim_stack.addWidget(self.dynamics_widget)     # sim index 1: dynamics
-
         self.quiz_widget = QuizWidget()
+
+        # simulation_stack is managed dynamically; keep a reference
+        self._sim_stack = self.main_window.get_simulation_stack()
 
         # Add widgets to outer content_stack in correct order
         stack = self.main_window.get_content_stack()
-        stack.addWidget(self.welcome_widget)               # Index 0: Welcome
-        stack.addWidget(self.theory_widget)                # Index 1: Theory
-        stack.addWidget(self.main_window.get_simulation_stack())  # Index 2: Simulations
-        stack.addWidget(self.quiz_widget)                  # Index 3: Quiz
+        stack.addWidget(self.welcome_widget)    # Index 0: Welcome
+        stack.addWidget(self.theory_widget)     # Index 1: Theory
+        stack.addWidget(self._sim_stack)        # Index 2: Simulations
+        stack.addWidget(self.quiz_widget)       # Index 3: Quiz
 
         # Set welcome widget as default
         stack.setCurrentIndex(0)
@@ -70,20 +67,12 @@ class MainController:
         navigation_tree = self.main_window.get_navigation_tree()
         navigation_tree.itemClicked.connect(self._on_tree_item_clicked)
         
-        # Connect simulation button if needed
+        # Connect simulation button
         self.theory_widget.get_simulation_button().clicked.connect(
             self._on_simulation_button_clicked
         )
-        
-        # Connect simulation widget signals to update simulation
-        self.simulation_widget.velocity_spinbox.valueChanged.connect(self.update_simulation)
-        self.simulation_widget.velocity_slider.valueChanged.connect(self.update_simulation)
-        self.simulation_widget.angle_slider.valueChanged.connect(self.update_simulation)
-        self.simulation_widget.planet_combo.currentTextChanged.connect(self.update_simulation)
-        
-        # Connect back buttons to return to theory view
-        self.simulation_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
-        self.dynamics_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
+
+        # Connect back button for quiz
         self.quiz_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
 
         # Connect quiz button in theory widget
@@ -226,14 +215,40 @@ class MainController:
         return False
     
     def _on_simulation_button_clicked(self) -> None:
-        """Handle simulation button click event."""
-        # Route to the correct simulation widget based on current topic
-        sim_stack = self.main_window.get_simulation_stack()
-        if self._current_topic_title == "Баллистическое движение":
-            sim_stack.setCurrentIndex(0)   # kinematics
-            self.update_simulation()
-        else:
-            sim_stack.setCurrentIndex(1)   # inclined plane / dynamics
+        """Handle simulation button click — create widget via factory and display it."""
+        widget = get_simulation_widget(self._current_topic_title)
+        if widget is None:
+            return
+
+        # Clear any previously loaded simulation widget from the stack
+        while self._sim_stack.count() > 0:
+            old = self._sim_stack.widget(0)
+            self._sim_stack.removeWidget(old)
+            old.deleteLater()
+
+        # Add fresh widget and show it
+        self._sim_stack.addWidget(widget)
+        self._sim_stack.setCurrentIndex(0)
+
+        # Wire up back button on the new widget
+        if hasattr(widget, 'get_back_button'):
+            widget.get_back_button().clicked.connect(self._on_back_button_clicked)
+
+        # Wire kinematics-specific controls if this is the ballistics widget
+        if hasattr(widget, 'velocity_spinbox'):
+            widget.velocity_spinbox.valueChanged.connect(
+                lambda: self._update_ballistics_simulation(widget)
+            )
+            widget.velocity_slider.valueChanged.connect(
+                lambda: self._update_ballistics_simulation(widget)
+            )
+            widget.angle_slider.valueChanged.connect(
+                lambda: self._update_ballistics_simulation(widget)
+            )
+            widget.planet_combo.currentTextChanged.connect(
+                lambda: self._update_ballistics_simulation(widget)
+            )
+            self._update_ballistics_simulation(widget)
 
         # Show the simulation container (index 2 of outer stack)
         self.main_window.get_content_stack().setCurrentIndex(2)
@@ -250,22 +265,20 @@ class MainController:
         """
         return self.main_window
     
-    def update_simulation(self) -> None:
-        """Update the simulation plot with current parameters."""
+    def _update_ballistics_simulation(self, widget: 'QWidget') -> None:
+        """Update the ballistics simulation plot with current widget parameters.
+
+        Args:
+            widget: The SimulationWidget instance to read values from and update.
+        """
         try:
-            # Get current values from simulation widget
-            velocity = self.simulation_widget.get_velocity()
-            angle = self.simulation_widget.get_angle()
-            gravity = self.simulation_widget.get_gravity()
-            
-            # Calculate trajectory
+            velocity = widget.get_velocity()
+            angle = widget.get_angle()
+            gravity = widget.get_gravity()
             x_coords, y_coords = ProjectileModel.calculate_trajectory(
                 velocity, angle, gravity
             )
-            
-            # Update plot
-            self.simulation_widget.update_plot(x_coords, y_coords)
-            
+            widget.update_plot(x_coords, y_coords)
         except Exception as e:
             print(f"Error updating simulation: {e}")
     
