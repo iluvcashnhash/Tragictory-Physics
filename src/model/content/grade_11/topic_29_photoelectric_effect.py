@@ -52,7 +52,7 @@ register_content(
     grade=11,
     grade_desc="Электродинамика и Квантовая физика",
     title="Фотоэффект и уравнение Эйнштейна",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

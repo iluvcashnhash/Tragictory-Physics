@@ -24,6 +24,10 @@ from ..view.simulations import spring_widget as _spr_reg      # noqa: F401 — t
 from ..view.simulations import pendulum_widget as _pen_reg    # noqa: F401 — triggers registration
 from ..view.simulations import orbit_widget as _orb_reg       # noqa: F401 — triggers registration
 from ..view.simulations import wave_widget as _wav_reg        # noqa: F401 — triggers registration
+from ..view.simulations import thermo_widget as _thm_reg      # noqa: F401 — triggers registration
+from ..view.simulations import efield_widget as _efd_reg      # noqa: F401 — triggers registration
+from ..view.simulations import rlc_widget as _rlc_reg         # noqa: F401 — triggers registration
+from ..view.simulations import photoelectric_widget as _pe_reg  # noqa: F401 — triggers registration
 
 
 class MainController:

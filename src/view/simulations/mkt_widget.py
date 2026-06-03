@@ -248,4 +248,4 @@ class MKTWidget(QWidget):
 
 
 from .registry import register_simulation
-register_simulation("Идеальный газ и основное уравнение МКТ", MKTWidget)
+register_simulation("Идеальный газ: молекулярная симуляция МКТ", MKTWidget)
