@@ -6,7 +6,7 @@ and formulas using QWebEngineView with MathJax for professional LaTeX rendering.
 """
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QPushButton
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 )
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtGui import QFont
@@ -28,6 +28,7 @@ class TheoryWidget(QWidget):
         # Initialize data storage
         self.current_theory: str = ""
         self.current_formulas: List[Dict] = []
+        self.current_title: str = ""
         
         # Create main layout
         self.layout = QVBoxLayout(self)
@@ -40,14 +41,8 @@ class TheoryWidget(QWidget):
         self._setup_simulation_button()
     
     def _setup_title_label(self) -> None:
-        """Setup the topic title label with large bold font."""
-        self.title_label = QLabel()
-        font = QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        self.title_label.setFont(font)
-        self.title_label.setWordWrap(True)
-        self.layout.addWidget(self.title_label)
+        """Title is now handled inside HTML content."""
+        pass
     
     def _setup_web_view(self) -> None:
         """Setup the web engine view for HTML content with MathJax."""
@@ -57,8 +52,16 @@ class TheoryWidget(QWidget):
     def _setup_simulation_button(self) -> None:
         """Setup the simulation launch button (hidden by default)."""
         self.simulation_button = QPushButton("Запустить симуляцию")
+        self.simulation_button.setMinimumWidth(200)  # Fixed minimum width
         self.simulation_button.hide()  # Hidden initially
-        self.layout.addWidget(self.simulation_button)
+        
+        # Create horizontal layout for button with right alignment
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()  # Push button to the right
+        button_layout.addWidget(self.simulation_button)
+        
+        # Add button layout to main layout
+        self.layout.addLayout(button_layout)
     
     def _render_content(self) -> None:
         """Render the complete HTML content with MathJax support."""
@@ -70,22 +73,34 @@ class TheoryWidget(QWidget):
             <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
             <style>
                 body {{
+                    margin: 0;
+                    padding: 0;
                     background-color: #1e1e1e;
                     color: #d4d4d4;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-                    font-size: 16px;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                     line-height: 1.6;
-                    padding: 20px;
-                    margin: 0;
                 }}
                 
-                h1, h2, h3, h4, h5, h6 {{
+                .container {{
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 40px 20px;
+                }}
+                
+                h1 {{
+                    color: #ffffff;
+                    border-bottom: 1px solid #333;
+                    padding-bottom: 10px;
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                }}
+                
+                h2, h3, h4, h5, h6 {{
                     color: #ffffff;
                     margin-top: 24px;
                     margin-bottom: 16px;
                 }}
                 
-                h1 {{ font-size: 28px; }}
                 h2 {{ font-size: 24px; }}
                 h3 {{ font-size: 20px; }}
                 
@@ -117,22 +132,21 @@ class TheoryWidget(QWidget):
                 table {{
                     border-collapse: collapse;
                     width: 100%;
-                    margin-top: 20px;
+                    margin-top: 30px;
                     background-color: #252526;
-                    border-radius: 4px;
+                    border-radius: 8px;
                     overflow: hidden;
                 }}
                 
                 th, td {{
-                    border: 1px solid #3e3e42;
-                    padding: 12px;
+                    border: 1px solid #333;
+                    padding: 16px;
                     text-align: left;
-                    vertical-align: top;
                 }}
                 
                 th {{
-                    background-color: #2a2a2a;
-                    font-weight: bold;
+                    background-color: #2d2d30;
+                    font-weight: 600;
                     color: #ffffff;
                 }}
                 
@@ -157,9 +171,11 @@ class TheoryWidget(QWidget):
             </style>
         </head>
         <body>
-            {self.current_theory}
-            
-            {self._generate_formulas_html()}
+            <div class="container">
+                <h1>{self.current_title}</h1>
+                {self.current_theory}
+                {self._generate_formulas_html()}
+            </div>
         </body>
         </html>
         """
@@ -214,7 +230,8 @@ class TheoryWidget(QWidget):
         Args:
             text: The title text to display.
         """
-        self.title_label.setText(text)
+        self.current_title = text
+        self._render_content()
     
     def set_theory(self, html: str) -> None:
         """Set the theory content in HTML format.
