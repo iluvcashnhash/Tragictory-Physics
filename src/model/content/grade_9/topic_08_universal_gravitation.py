@@ -46,7 +46,7 @@ register_content(
     grade=9,
     grade_desc="Динамика",
     title="Закон всемирного тяготения",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

@@ -54,7 +54,7 @@ register_content(
     grade=9,
     grade_desc="Динамика",
     title="Механические колебания и волны",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,
