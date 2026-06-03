@@ -7,7 +7,7 @@ formulas, and provides access to simulations for selected topics.
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QTextBrowser, 
-    QTableWidget, QTableWidgetItem, QPushButton
+    QTableWidget, QTableWidgetItem, QPushButton, QHeaderView
 )
 from PyQt6.QtGui import QFont
 from typing import List, Dict
@@ -26,8 +26,8 @@ class TheoryWidget(QWidget):
         
         # Create main layout
         self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(10, 10, 10, 10)
-        self.layout.setSpacing(10)
+        self.layout.setContentsMargins(20, 20, 20, 20)
+        self.layout.setSpacing(15)
         
         # Initialize UI components
         self._setup_title_label()
@@ -58,10 +58,16 @@ class TheoryWidget(QWidget):
         self.formulas_table.setColumnCount(2)
         self.formulas_table.setHorizontalHeaderLabels(["Формула", "Описание"])
         
-        # Adjust column widths
+        # Enable word wrap for cells
+        self.formulas_table.setWordWrap(True)
+        
+        # Configure column resize modes
         header = self.formulas_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.resizeSection(0, 200)  # Formula column width
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)  # Formula column
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Description column
+        
+        # Configure automatic row height
+        self.formulas_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         
         self.formulas_table.setAlternatingRowColors(True)
         self.formulas_table.setSelectionBehavior(

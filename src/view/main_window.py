@@ -7,7 +7,7 @@ with navigation tree and content area using PyQt6.
 
 from PyQt6.QtWidgets import (
     QMainWindow, QSplitter, QTreeWidget, QTreeWidgetItem, 
-    QStackedWidget, QWidget, QVBoxLayout
+    QStackedWidget, QWidget, QVBoxLayout, QLabel
 )
 from PyQt6.QtCore import Qt
 
@@ -83,12 +83,12 @@ class MainWindow(QMainWindow):
         # Theory view placeholder
         self.theory_widget = QWidget()
         theory_layout = QVBoxLayout(self.theory_widget)
-        theory_layout.addWidget(self.navigation_tree)  # Placeholder
+        theory_layout.addWidget(QLabel("Theory Placeholder"))
         
         # Simulation view placeholder
         self.simulation_widget = QWidget()
         simulation_layout = QVBoxLayout(self.simulation_widget)
-        simulation_layout.addWidget(self.navigation_tree)  # Placeholder
+        simulation_layout.addWidget(QLabel("Simulation Placeholder"))
         
         # Add widgets to stacked widget
         self.content_stack.addWidget(self.theory_widget)  # Index 0: Theory

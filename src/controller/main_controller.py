@@ -10,8 +10,10 @@ from PyQt6.QtWidgets import QTreeWidgetItem
 from PyQt6.QtCore import Qt
 
 from ..model.db_manager import DatabaseManager
+from ..model.kinematics import ProjectileModel
 from ..view.main_window import MainWindow
 from ..view.theory_widget import TheoryWidget
+from ..view.simulation_widget import SimulationWidget
 
 
 class MainController:
@@ -30,6 +32,12 @@ class MainController:
         # Create and setup theory widget
         self.theory_widget = TheoryWidget()
         self.main_window.get_content_stack().addWidget(self.theory_widget)
+        
+        # Create and setup simulation widget
+        self.simulation_widget = SimulationWidget()
+        self.main_window.get_content_stack().addWidget(self.simulation_widget)
+        
+        # Set theory widget as default
         self.main_window.get_content_stack().setCurrentWidget(self.theory_widget)
         
         # Setup UI connections
@@ -47,6 +55,15 @@ class MainController:
         self.theory_widget.get_simulation_button().clicked.connect(
             self._on_simulation_button_clicked
         )
+        
+        # Connect simulation widget signals to update simulation
+        self.simulation_widget.velocity_spinbox.valueChanged.connect(self.update_simulation)
+        self.simulation_widget.velocity_slider.valueChanged.connect(self.update_simulation)
+        self.simulation_widget.angle_slider.valueChanged.connect(self.update_simulation)
+        self.simulation_widget.planet_combo.currentTextChanged.connect(self.update_simulation)
+        
+        # Connect back button to return to theory view
+        self.simulation_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
     
     def load_navigation_tree(self) -> None:
         """Load navigation tree with grades and topics from database."""
@@ -113,6 +130,11 @@ class MainController:
         # Set formulas
         self.theory_widget.set_formulas(formulas_data)
         
+        # Switch to theory view
+        content_stack = self.main_window.get_content_stack()
+        theory_index = content_stack.indexOf(self.theory_widget)
+        content_stack.setCurrentIndex(theory_index)
+        
         # Show/hide simulation button based on topic data
         if self._topic_has_simulation(topic_id):
             self.theory_widget.show_simulation_button()
@@ -170,8 +192,13 @@ class MainController:
     
     def _on_simulation_button_clicked(self) -> None:
         """Handle simulation button click event."""
-        # This will be implemented later when simulation widget is created
-        print("Simulation button clicked - simulation widget not implemented yet")
+        # Switch to simulation view
+        content_stack = self.main_window.get_content_stack()
+        simulation_index = content_stack.indexOf(self.simulation_widget)
+        content_stack.setCurrentIndex(simulation_index)
+        
+        # Update simulation with current parameters
+        self.update_simulation()
     
     def show(self) -> None:
         """Show the main window."""
@@ -184,3 +211,28 @@ class MainController:
             MainWindow: The main window instance.
         """
         return self.main_window
+    
+    def update_simulation(self) -> None:
+        """Update the simulation plot with current parameters."""
+        try:
+            # Get current values from simulation widget
+            velocity = self.simulation_widget.get_velocity()
+            angle = self.simulation_widget.get_angle()
+            gravity = self.simulation_widget.get_gravity()
+            
+            # Calculate trajectory
+            x_coords, y_coords = ProjectileModel.calculate_trajectory(
+                velocity, angle, gravity
+            )
+            
+            # Update plot
+            self.simulation_widget.update_plot(x_coords, y_coords)
+            
+        except Exception as e:
+            print(f"Error updating simulation: {e}")
+    
+    def _on_back_button_clicked(self) -> None:
+        """Handle back button click event to return to theory view."""
+        content_stack = self.main_window.get_content_stack()
+        theory_index = content_stack.indexOf(self.theory_widget)
+        content_stack.setCurrentIndex(theory_index)

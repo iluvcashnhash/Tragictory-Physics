@@ -8,7 +8,7 @@ physics simulations with real-time trajectory visualization using pyqtgraph.
 import numpy as np
 from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QFormLayout,
-    QSlider, QSpinBox, QComboBox, QLabel, QGroupBox
+    QSlider, QSpinBox, QComboBox, QLabel, QGroupBox, QPushButton
 )
 from PyQt6.QtCore import Qt
 import pyqtgraph as pg
@@ -71,6 +71,10 @@ class SimulationWidget(QWidget):
         # Create control panel group
         control_group = QGroupBox("Параметры симуляции")
         control_layout = QVBoxLayout(control_group)
+        
+        # Add back button at the top
+        self.back_button = QPushButton("Вернуться к теории")
+        control_layout.addWidget(self.back_button)
         
         # Create form layout for controls
         self.form_layout = QFormLayout()
@@ -200,3 +204,11 @@ class SimulationWidget(QWidget):
             pg.PlotWidget: The plot widget.
         """
         return self.plot_widget
+    
+    def get_back_button(self) -> QPushButton:
+        """Get the back button widget.
+        
+        Returns:
+            QPushButton: The back button for returning to theory view.
+        """
+        return self.back_button
