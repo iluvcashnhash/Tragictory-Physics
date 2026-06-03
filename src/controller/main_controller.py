@@ -19,6 +19,7 @@ from ..view.simulations.registry import get_simulation_widget
 from ..view.simulations import simulation_widget as _sim_reg  # noqa: F401 — triggers registration
 from ..view.simulations import dynamics_widget as _dyn_reg    # noqa: F401 — triggers registration
 from ..view.simulations import mkt_widget as _mkt_reg         # noqa: F401 — triggers registration
+from ..view.simulations import optics_widget as _opt_reg      # noqa: F401 — triggers registration
 
 
 class MainController:

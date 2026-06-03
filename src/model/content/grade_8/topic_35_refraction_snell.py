@@ -51,7 +51,7 @@ register_content(
     grade=8,
     grade_desc="Термодинамика и электромагнетизм",
     title="Преломление света и линзы",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,
