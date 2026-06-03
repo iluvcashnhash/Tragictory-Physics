@@ -1,14 +1,14 @@
 """
 Theory widget module for Tragictory Physics.
 
-This module contains the TheoryWidget class that displays theory content,
-formulas, and provides access to simulations for selected topics.
+This module contains the TheoryWidget class that displays theory content
+and formulas using QWebEngineView with MathJax for professional LaTeX rendering.
 """
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QTextBrowser, 
-    QTableWidget, QTableWidgetItem, QPushButton, QHeaderView
+    QWidget, QVBoxLayout, QLabel, QPushButton
 )
+from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtGui import QFont
 from typing import List, Dict
 
@@ -17,12 +17,17 @@ class TheoryWidget(QWidget):
     """Widget for displaying theory content and formulas.
     
     Provides a structured view for educational content including topic title,
-    theory text in HTML format, formulas table, and simulation launch button.
+    theory text in HTML format, and formulas with professional LaTeX rendering
+    using MathJax via QWebEngineView.
     """
     
     def __init__(self) -> None:
         """Initialize the theory widget with UI components."""
         super().__init__()
+        
+        # Initialize data storage
+        self.current_theory: str = ""
+        self.current_formulas: List[Dict] = []
         
         # Create main layout
         self.layout = QVBoxLayout(self)
@@ -31,8 +36,7 @@ class TheoryWidget(QWidget):
         
         # Initialize UI components
         self._setup_title_label()
-        self._setup_theory_browser()
-        self._setup_formulas_table()
+        self._setup_web_view()
         self._setup_simulation_button()
     
     def _setup_title_label(self) -> None:
@@ -45,41 +49,164 @@ class TheoryWidget(QWidget):
         self.title_label.setWordWrap(True)
         self.layout.addWidget(self.title_label)
     
-    def _setup_theory_browser(self) -> None:
-        """Setup the text browser for HTML theory content."""
-        self.theory_browser = QTextBrowser()
-        self.theory_browser.setOpenExternalLinks(False)
-        self.theory_browser.setMinimumHeight(300)
-        self.layout.addWidget(self.theory_browser)
-    
-    def _setup_formulas_table(self) -> None:
-        """Setup the table widget for displaying formulas."""
-        self.formulas_table = QTableWidget()
-        self.formulas_table.setColumnCount(2)
-        self.formulas_table.setHorizontalHeaderLabels(["Формула", "Описание"])
-        
-        # Enable word wrap for cells
-        self.formulas_table.setWordWrap(True)
-        
-        # Configure column resize modes
-        header = self.formulas_table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)  # Formula column
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Description column
-        
-        # Configure automatic row height
-        self.formulas_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-        
-        self.formulas_table.setAlternatingRowColors(True)
-        self.formulas_table.setSelectionBehavior(
-            QTableWidget.SelectionBehavior.SelectRows
-        )
-        self.layout.addWidget(self.formulas_table)
+    def _setup_web_view(self) -> None:
+        """Setup the web engine view for HTML content with MathJax."""
+        self.web_view = QWebEngineView()
+        self.layout.addWidget(self.web_view)
     
     def _setup_simulation_button(self) -> None:
         """Setup the simulation launch button (hidden by default)."""
         self.simulation_button = QPushButton("Запустить симуляцию")
         self.simulation_button.hide()  # Hidden initially
         self.layout.addWidget(self.simulation_button)
+    
+    def _render_content(self) -> None:
+        """Render the complete HTML content with MathJax support."""
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            <style>
+                body {{
+                    background-color: #1e1e1e;
+                    color: #d4d4d4;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    padding: 20px;
+                    margin: 0;
+                }}
+                
+                h1, h2, h3, h4, h5, h6 {{
+                    color: #ffffff;
+                    margin-top: 24px;
+                    margin-bottom: 16px;
+                }}
+                
+                h1 {{ font-size: 28px; }}
+                h2 {{ font-size: 24px; }}
+                h3 {{ font-size: 20px; }}
+                
+                p {{
+                    margin-bottom: 16px;
+                }}
+                
+                strong {{
+                    color: #ffffff;
+                }}
+                
+                ul, ol {{
+                    margin-bottom: 16px;
+                    padding-left: 20px;
+                }}
+                
+                li {{
+                    margin-bottom: 8px;
+                }}
+                
+                blockquote {{
+                    background-color: #2a2a2a;
+                    border-left: 4px solid #094771;
+                    margin: 16px 0;
+                    padding: 12px 16px;
+                    border-radius: 0 4px 4px 0;
+                }}
+                
+                table {{
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-top: 20px;
+                    background-color: #252526;
+                    border-radius: 4px;
+                    overflow: hidden;
+                }}
+                
+                th, td {{
+                    border: 1px solid #3e3e42;
+                    padding: 12px;
+                    text-align: left;
+                    vertical-align: top;
+                }}
+                
+                th {{
+                    background-color: #2a2a2a;
+                    font-weight: bold;
+                    color: #ffffff;
+                }}
+                
+                tr:nth-child(even) {{
+                    background-color: #2a2a2a;
+                }}
+                
+                .formula {{
+                    font-family: 'Courier New', monospace;
+                    font-size: 14px;
+                    background-color: #1a1a1a;
+                    padding: 8px;
+                    border-radius: 4px;
+                    margin: 4px 0;
+                    display: inline-block;
+                }}
+                
+                .formula-description {{
+                    color: #b3b3b3;
+                    font-style: italic;
+                }}
+            </style>
+        </head>
+        <body>
+            {self.current_theory}
+            
+            {self._generate_formulas_html()}
+        </body>
+        </html>
+        """
+        
+        self.web_view.setHtml(html_content)
+    
+    def _generate_formulas_html(self) -> str:
+        """Generate HTML table with LaTeX formulas."""
+        if not self.current_formulas:
+            return ""
+        
+        formulas_html = """
+        <h2>Формулы</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Формула</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+        """
+        
+        for formula in self.current_formulas:
+            formula_latex = formula.get('formula_latex', '')
+            description = formula.get('description', '')
+            
+            # Wrap LaTeX formula in $$ for MathJax rendering
+            rendered_formula = f"$${formula_latex}$$"
+            
+            formulas_html += f"""
+                <tr>
+                    <td>
+                        <div class="formula">{rendered_formula}</div>
+                    </td>
+                    <td>
+                        <div class="formula-description">{description}</div>
+                    </td>
+                </tr>
+            """
+        
+        formulas_html += """
+            </tbody>
+        </table>
+        """
+        
+        return formulas_html
     
     def set_title(self, text: str) -> None:
         """Set the topic title.
@@ -93,30 +220,19 @@ class TheoryWidget(QWidget):
         """Set the theory content in HTML format.
         
         Args:
-            html: The HTML content to display in the theory browser.
+            html: The HTML content to display in the theory view.
         """
-        self.theory_browser.setHtml(html)
+        self.current_theory = html
+        self._render_content()
     
     def set_formulas(self, data_list: List[Dict]) -> None:
-        """Set the formulas data in the table.
+        """Set the formulas data for rendering.
         
         Args:
             data_list: List of dictionaries with 'formula_latex' and 'description' keys.
         """
-        if not data_list:
-            self.formulas_table.setRowCount(0)
-            return
-        
-        self.formulas_table.setRowCount(len(data_list))
-        
-        for row, formula_data in enumerate(data_list):
-            # Formula column
-            formula_item = QTableWidgetItem(formula_data.get('formula_latex', ''))
-            self.formulas_table.setItem(row, 0, formula_item)
-            
-            # Description column
-            description_item = QTableWidgetItem(formula_data.get('description', ''))
-            self.formulas_table.setItem(row, 1, description_item)
+        self.current_formulas = data_list or []
+        self._render_content()
     
     def show_simulation_button(self) -> None:
         """Show the simulation launch button."""
