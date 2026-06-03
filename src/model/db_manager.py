@@ -5,6 +5,7 @@ This module provides a singleton DatabaseManager class for handling all database
 operations with proper connection management and data access methods.
 """
 
+import json
 import sqlite3
 from typing import List, Dict, Optional
 from .db_setup import get_connection
@@ -115,6 +116,30 @@ class DatabaseManager:
         rows = cursor.fetchall()
         return [self._row_to_dict(row) for row in rows]
     
+    def get_questions_for_topic(self, topic_id: int) -> List[Dict]:
+        """Get quiz questions for a specific topic.
+
+        Args:
+            topic_id: The ID of the topic.
+
+        Returns:
+            List[Dict]: List of question dictionaries with keys: id, topic_id,
+                question_text, options (list), correct_index.
+        """
+        cursor = self._connection.cursor()
+        cursor.execute(
+            "SELECT id, topic_id, question_text, options_json, correct_index "
+            "FROM questions WHERE topic_id = ? ORDER BY id",
+            (topic_id,)
+        )
+        rows = cursor.fetchall()
+        result: List[Dict] = []
+        for row in rows:
+            entry = self._row_to_dict(row)
+            entry['options'] = json.loads(entry.pop('options_json'))
+            result.append(entry)
+        return result
+
     def close(self) -> None:
         """Close the database connection."""
         if self._connection:

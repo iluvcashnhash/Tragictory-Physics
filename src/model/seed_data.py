@@ -5,6 +5,7 @@ This module populates the database with initial educational content
 using the CONTENT_REGISTRY system for scalable content management.
 """
 
+import json
 import sqlite3
 from .db_setup import get_connection
 
@@ -23,6 +24,7 @@ def seed_database() -> None:
     
     try:
         # Clear all existing data
+        cursor.execute("DELETE FROM questions")
         cursor.execute("DELETE FROM formulas")
         cursor.execute("DELETE FROM theory_blocks")
         cursor.execute("DELETE FROM topics")
@@ -39,6 +41,7 @@ def seed_database() -> None:
             has_simulation = content["has_simulation"]
             theory_html = content["theory"]
             formulas = content["formulas"]
+            questions = content.get("questions", [])
             
             # Create or get grade
             if grade not in grade_ids:
@@ -79,6 +82,22 @@ def seed_database() -> None:
                 )
             
             print(f"Added {len(formulas)} formulas")
+
+            # Create questions
+            for question in questions:
+                cursor.execute(
+                    """INSERT INTO questions (topic_id, question_text, options_json, correct_index)
+                       VALUES (?, ?, ?, ?)""",
+                    (
+                        topic_id,
+                        question.get("text", ""),
+                        json.dumps(question.get("options", []), ensure_ascii=False),
+                        question.get("correct_index", 0)
+                    )
+                )
+
+            if questions:
+                print(f"Added {len(questions)} questions")
         
         # Commit all changes
         conn.commit()

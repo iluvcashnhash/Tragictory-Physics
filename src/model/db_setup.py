@@ -77,6 +77,18 @@ def initialize_db() -> None:
             )
         """)
         
+        # Create questions table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                topic_id INTEGER NOT NULL,
+                question_text TEXT NOT NULL,
+                options_json TEXT NOT NULL,
+                correct_index INTEGER NOT NULL,
+                FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE
+            )
+        """)
+        
         conn.commit()
         
     except sqlite3.Error as e:

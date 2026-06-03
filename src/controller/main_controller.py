@@ -16,6 +16,7 @@ from ..view.theory_widget import TheoryWidget
 from ..view.simulation_widget import SimulationWidget
 from ..view.dynamics_widget import DynamicsWidget
 from ..view.welcome_widget import WelcomeWidget
+from ..view.quiz_widget import QuizWidget
 
 
 class MainController:
@@ -33,6 +34,7 @@ class MainController:
         
         # Track currently selected topic title for simulation routing
         self._current_topic_title: str = ""
+        self._current_questions: list = []
 
         # Initialize all content widgets
         self.welcome_widget = WelcomeWidget()
@@ -45,11 +47,14 @@ class MainController:
         sim_stack.addWidget(self.simulation_widget)   # sim index 0: kinematics
         sim_stack.addWidget(self.dynamics_widget)     # sim index 1: dynamics
 
+        self.quiz_widget = QuizWidget()
+
         # Add widgets to outer content_stack in correct order
         stack = self.main_window.get_content_stack()
         stack.addWidget(self.welcome_widget)               # Index 0: Welcome
         stack.addWidget(self.theory_widget)                # Index 1: Theory
         stack.addWidget(self.main_window.get_simulation_stack())  # Index 2: Simulations
+        stack.addWidget(self.quiz_widget)                  # Index 3: Quiz
 
         # Set welcome widget as default
         stack.setCurrentIndex(0)
@@ -79,6 +84,10 @@ class MainController:
         # Connect back buttons to return to theory view
         self.simulation_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
         self.dynamics_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
+        self.quiz_widget.get_back_button().clicked.connect(self._on_back_button_clicked)
+
+        # Connect quiz button in theory widget
+        self.theory_widget.get_quiz_button().clicked.connect(self._on_quiz_button_clicked)
     
     def load_navigation_tree(self) -> None:
         """Load navigation tree with grades and topics from database."""
@@ -156,6 +165,15 @@ class MainController:
             self.theory_widget.show_simulation_button()
         else:
             self.theory_widget.hide_simulation_button()
+
+        # Load questions and show/hide quiz button
+        self._current_questions = self.db_manager.get_questions_for_topic(topic_id)
+        if self._current_questions:
+            self.quiz_widget.load_question(self._current_questions[0])
+            self.theory_widget.show_quiz_button()
+        else:
+            self._current_questions = []
+            self.theory_widget.hide_quiz_button()
     
     def _get_topic_title_by_id(self, topic_id: int) -> str:
         """Get topic title by ID from navigation tree.
@@ -250,6 +268,10 @@ class MainController:
         except Exception as e:
             print(f"Error updating simulation: {e}")
     
+    def _on_quiz_button_clicked(self) -> None:
+        """Handle quiz button click — switch to quiz view (index 3)."""
+        self.main_window.get_content_stack().setCurrentIndex(3)
+
     def _on_back_button_clicked(self) -> None:
         """Handle back button click event to return to theory view."""
         self.main_window.get_content_stack().setCurrentIndex(1)

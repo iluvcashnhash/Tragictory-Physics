@@ -50,13 +50,18 @@ class TheoryWidget(QWidget):
         self.layout.addWidget(self.web_view)
 
     def _setup_simulation_button(self) -> None:
-        """Setup the simulation launch button (hidden by default)."""
+        """Setup the simulation and quiz buttons (hidden by default)."""
         self.simulation_button = QPushButton("Запустить симуляцию")
         self.simulation_button.setMinimumWidth(200)
         self.simulation_button.hide()
 
+        self.quiz_button = QPushButton("Пройти тест")
+        self.quiz_button.setMinimumWidth(160)
+        self.quiz_button.hide()
+
         button_layout = QHBoxLayout()
         button_layout.addStretch()
+        button_layout.addWidget(self.quiz_button)
         button_layout.addWidget(self.simulation_button)
         self.layout.addLayout(button_layout)
 
@@ -232,3 +237,15 @@ class TheoryWidget(QWidget):
     def get_simulation_button(self) -> QPushButton:
         """Return the simulation launch button."""
         return self.simulation_button
+
+    def show_quiz_button(self) -> None:
+        """Show the quiz button."""
+        self.quiz_button.show()
+
+    def hide_quiz_button(self) -> None:
+        """Hide the quiz button."""
+        self.quiz_button.hide()
+
+    def get_quiz_button(self) -> QPushButton:
+        """Return the quiz button."""
+        return self.quiz_button

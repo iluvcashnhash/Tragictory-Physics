@@ -40,4 +40,12 @@ FORMULAS = [
     {"formula_latex": "$$ L = \\frac{v_0^2 \\sin(2\\alpha)}{g} $$", "description": "Дальность полета"}
 ]
 
-register_content(10, "Кинематика", "Баллистическое движение", True, THEORY, FORMULAS)
+QUESTIONS = [
+    {
+        "text": "Как изменится дальность полета тела, брошенного под углом 45 градусов, если начальную скорость увеличить в 2 раза?",
+        "options": ["Увеличится в 2 раза", "Увеличится в 4 раза", "Не изменится", "Уменьшится в 2 раза"],
+        "correct_index": 1
+    }
+]
+
+register_content(10, "Кинематика", "Баллистическое движение", True, THEORY, FORMULAS, questions=QUESTIONS)

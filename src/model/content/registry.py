@@ -7,7 +7,7 @@ that will be loaded into the database during the seeding process.
 
 CONTENT_REGISTRY = []
 
-def register_content(grade: int, grade_desc: str, title: str, has_simulation: bool, theory_html: str, formulas: list):
+def register_content(grade: int, grade_desc: str, title: str, has_simulation: bool, theory_html: str, formulas: list, questions: list = None):
     """Register educational content for database seeding.
     
     Args:
@@ -24,5 +24,6 @@ def register_content(grade: int, grade_desc: str, title: str, has_simulation: bo
         "title": title,
         "has_simulation": has_simulation,
         "theory": theory_html,
-        "formulas": formulas
+        "formulas": formulas,
+        "questions": questions or []
     })
