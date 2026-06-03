@@ -78,6 +78,8 @@ class MainController:
             grade_item = QTreeWidgetItem(navigation_tree)
             grade_item.setText(0, f"{grade['number']} класс")
             grade_item.setData(0, Qt.ItemDataRole.UserRole, grade['id'])
+            # Make grade items non-selectable but keep them expandable
+            grade_item.setFlags(grade_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
             
             # Get topics for this grade
             topics = self.db_manager.get_topics_by_grade(grade['id'])
