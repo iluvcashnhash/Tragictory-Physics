@@ -50,7 +50,7 @@ register_content(
     grade=7,
     grade_desc="Базовые концепции и механика",
     title="Закон Архимеда и плавание тел",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

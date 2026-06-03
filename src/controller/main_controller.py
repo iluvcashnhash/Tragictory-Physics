@@ -28,6 +28,11 @@ from ..view.simulations import thermo_widget as _thm_reg      # noqa: F401 — t
 from ..view.simulations import efield_widget as _efd_reg      # noqa: F401 — triggers registration
 from ..view.simulations import rlc_widget as _rlc_reg         # noqa: F401 — triggers registration
 from ..view.simulations import photoelectric_widget as _pe_reg  # noqa: F401 — triggers registration
+from ..view.simulations import brownian_widget as _brn_reg     # noqa: F401 — triggers registration
+from ..view.simulations import hooke_widget as _hk_reg         # noqa: F401 — triggers registration
+from ..view.simulations import archimedes_widget as _arc_reg   # noqa: F401 — triggers registration
+from ..view.simulations import friction_widget as _frc_reg     # noqa: F401 — triggers registration
+from ..view.simulations import pressure_widget as _prs_reg     # noqa: F401 — triggers registration
 
 
 class MainController:

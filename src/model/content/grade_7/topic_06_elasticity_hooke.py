@@ -43,7 +43,7 @@ register_content(
     grade=7,
     grade_desc="Базовые концепции и механика",
     title="Сила упругости и закон Гука",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,
