@@ -16,6 +16,7 @@ QTreeWidget {
     alternate-background-color: #2a2a2a;
     selection-background-color: #094771;
     outline: none;
+    color: #d4d4d4;
 }
 
 QTreeWidget::item {
@@ -32,18 +33,12 @@ QTreeWidget::item:hover {
     background-color: #2a2a2a;
 }
 
-QTreeWidget::branch:has-children:!has-siblings:closed,
-QTreeWidget::branch:closed:has-children:has-siblings,
-QTreeWidget::branch:has-children:closed {
-    border-image: none;
-    image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEgMkw5IDZMMSAxMCIgc3Ryb2tlPSIjODg4ODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=);
+QTreeView::branch:has-children:closed {
+    image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='%23d4d4d4' d='M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z'/%3E%3C/svg%3E");
 }
 
-QTreeWidget::branch:open:has-children:!has-siblings,
-QTreeWidget::branch:open:has-children:has-siblings,
-QTreeWidget::branch:has-children:open {
-    border-image: none;
-    image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEgM0w2IDhMMTEgMyIgc3Ryb2tlPSIjODg4ODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=);
+QTreeView::branch:has-children:open {
+    image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='%23d4d4d4' d='M7.41,8.59L12,13.17L16.59,8.59L18,10L12,16L6,10L7.41,8.59Z'/%3E%3C/svg%3E");
 }
 
 QTreeWidget::header {

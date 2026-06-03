@@ -37,8 +37,8 @@ class MainController:
         self.simulation_widget = SimulationWidget()
         self.main_window.get_content_stack().addWidget(self.simulation_widget)
         
-        # Set theory widget as default
-        self.main_window.get_content_stack().setCurrentWidget(self.theory_widget)
+        # Set welcome widget as default (index 0)
+        self.main_window.get_content_stack().setCurrentIndex(0)
         
         # Setup UI connections
         self._setup_connections()
@@ -132,10 +132,9 @@ class MainController:
         # Set formulas
         self.theory_widget.set_formulas(formulas_data)
         
-        # Switch to theory view
+        # Switch to theory view (index 1)
         content_stack = self.main_window.get_content_stack()
-        theory_index = content_stack.indexOf(self.theory_widget)
-        content_stack.setCurrentIndex(theory_index)
+        content_stack.setCurrentIndex(1)
         
         # Show/hide simulation button based on topic data
         if self._topic_has_simulation(topic_id):
@@ -194,10 +193,9 @@ class MainController:
     
     def _on_simulation_button_clicked(self) -> None:
         """Handle simulation button click event."""
-        # Switch to simulation view
+        # Switch to simulation view (index 2)
         content_stack = self.main_window.get_content_stack()
-        simulation_index = content_stack.indexOf(self.simulation_widget)
-        content_stack.setCurrentIndex(simulation_index)
+        content_stack.setCurrentIndex(2)
         
         # Update simulation with current parameters
         self.update_simulation()
@@ -236,5 +234,4 @@ class MainController:
     def _on_back_button_clicked(self) -> None:
         """Handle back button click event to return to theory view."""
         content_stack = self.main_window.get_content_stack()
-        theory_index = content_stack.indexOf(self.theory_widget)
-        content_stack.setCurrentIndex(theory_index)
+        content_stack.setCurrentIndex(1)
