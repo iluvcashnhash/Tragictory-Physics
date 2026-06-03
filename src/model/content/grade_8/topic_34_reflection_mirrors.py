@@ -44,7 +44,7 @@ register_content(
     grade=8,
     grade_desc="Термодинамика и электромагнетизм",
     title="Отражение света и плоские зеркала",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

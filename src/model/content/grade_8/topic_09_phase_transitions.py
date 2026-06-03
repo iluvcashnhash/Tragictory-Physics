@@ -47,7 +47,7 @@ register_content(
     grade=8,
     grade_desc="Термодинамика и электромагнетизм",
     title="Плавление и кристаллизация",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

@@ -46,7 +46,7 @@ register_content(
     grade=8,
     grade_desc="Термодинамика и электромагнетизм",
     title="Магнитное поле и опыт Эрстеда",
-    has_simulation=False,
+    has_simulation=True,
     theory_html=THEORY,
     formulas=FORMULAS,
     questions=QUESTIONS,

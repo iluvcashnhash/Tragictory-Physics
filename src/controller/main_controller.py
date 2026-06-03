@@ -32,7 +32,12 @@ from ..view.simulations import brownian_widget as _brn_reg     # noqa: F401 — 
 from ..view.simulations import hooke_widget as _hk_reg         # noqa: F401 — triggers registration
 from ..view.simulations import archimedes_widget as _arc_reg   # noqa: F401 — triggers registration
 from ..view.simulations import friction_widget as _frc_reg     # noqa: F401 — triggers registration
-from ..view.simulations import pressure_widget as _prs_reg     # noqa: F401 — triggers registration
+from ..view.simulations import pressure_widget as _prs_reg         # noqa: F401 — triggers registration
+from ..view.simulations import heat_transfer_widget as _ht_reg     # noqa: F401 — triggers registration
+from ..view.simulations import phase_transition_widget as _pt_reg  # noqa: F401 — triggers registration
+from ..view.simulations import ohm_widget as _ohm_reg              # noqa: F401 — triggers registration
+from ..view.simulations import magnetic_field_widget as _mag_reg   # noqa: F401 — triggers registration
+from ..view.simulations import mirror_widget as _mir_reg           # noqa: F401 — triggers registration
 
 
 class MainController:
